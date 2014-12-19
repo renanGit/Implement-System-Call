@@ -1,0 +1,49 @@
+Maylem Gonzalez - 2134900
+Renan Santana - 4039451
+
+Report
+Assignment 2:
+
+Add a system call to the Linux kernel (10 points)
+
+Before starting this assignment, we learned to compile and install our Linux kernel source code. This second assignment allowed us to gain more experience in creating kernel modules, and allowed us to learn how to make static system calls. While doing this assignment, we became even more acquainted with the location and the contents of a number of files involved in the process of creating a static system call, namely sched.h, current.h, unistd.h, and syscalls.h. We also learned about the process that takes place when using our static system call, namely the transition between user space to kernel space and back to user space again. Specifically, we learned how to:
+
+ 1. Create a new static system call
+ 2. Obtain information on a process from the task_struct in sched.h, as well as
+other files
+ 3. Access the static system call directly using syscall()
+ 4. Use ps options to verify our static system call's results
+ 5. Fork a process to create children and siblings for our static system call
+ 6. Identify which properties of the calling process changed with subsequent
+calls to our system call	
+
+Challenges that we came across while doing this assignment includes having a 64-bit architecture, requiring us to modify the 64-bit unistd.h file instead of the 32-bit version that we had originally modified. Before we figured out how to do this, we were consistently getting a -1 result upon calling our static system call, rather than the expected correct output. However, as a result of this challenge, we learned more about the way that the kernel interacts with the system's architecture. Additionally, we had problems in forking our process properly so that we could create children and verify the results our system call was producing, but we eventually learned how to do this. 
+
+Instructions for running the test program and file locations:
+ Location of pinfo.c:
+	/usr/src/linux/pinfo/
+
+ Location of kernel space pinfo.h:
+	/usr/src/linux/include/linux/
+
+ Location of user space pinfo.h:
+	/root/Desktop/proj2/
+
+ Location of test_pinfo.c:
+	/root/Desktop/proj2/
+
+ Location of Makefile of test_pinfo.c:
+	/root/Desktop/proj2/
+
+ The program can be run by navigating to /root/Desktop/proj2 and entering ./test into bash
+
+By default, the test file will call the static system call and print the information for the calling process. To test whether the siblings PIDs are calculated properly, the following tests in bash can be done:
+
+	sleep 1 & ./test
+ or
+	sleep 1 & ./test & sleep 1
+ or
+	./test & sleep 1
+
+To test whether the children fields are calculated properly, a simple fork() inserted in the test file will suffice and a sleep(). For more information, please refer to output.txt
+

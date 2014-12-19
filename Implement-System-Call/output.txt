@@ -1,0 +1,109 @@
+Maylem Gonzalez - 2134900
+Renan Santana - 4031451
+Static System Call: pinfo
+Assignment 2
+
+Output Collected:
+
+Test#1: No siblings or children
+
+CURRENT PROCESS INFORMATION
+-----------------------------------------
+PID:					2948
+STATE:				0
+NICE:				-1
+PARENT PID:			2852
+NUMBER OF CHILDREN: 	-1
+YOUNGEST CHILD (PID): 	-1
+YOUNGER SIBLING (PID):	-1
+OLDER SIBLING (PID):	-1
+START TIME (nanosecs):	731633090922
+USER TIME (millisecs): 	6
+SYSTEM TIME (millisecs):	6
+UID (user id):			0
+COMM (program name):	test
+
+Test#2: Siblings
+[root@Apsalar test_pinfo]# sleep 1 & sleep 1 & ./test & sleep 1 & sleep 1
+[1] 2951
+[2] 2952
+[3] 2953
+[4] 2954
+CURRENT PROCESS INFORMATION
+-----------------------------------------
+PID:					2953
+STATE:				0
+NICE:				-3
+PARENT PID:			2852
+NUMBER OF CHILDREN: 	-1
+YOUNGEST CHILD (PID): 	-1
+YOUNGER SIBLING (PID):	2954
+OLDER SIBLING (PID):	2952
+START TIME (nanosecs):	773127019922
+USER TIME (millisecs): 	4
+SYSTEM TIME (millisecs):	19
+UID (user id):			0
+COMM (program name):	test
+
+Test#3: Children (with fork() in test file)
+PID:					3090
+STATE:				0
+NICE:				0
+PARENT PID:			2852
+NUMBER OF CHILDREN: 	1
+YOUNGEST CHILD (PID): 	3091
+YOUNGER SIBLING (PID):	-1
+OLDER SIBLING (PID):	-1
+START TIME (nanosecs):	1326266085922
+USER TIME (millisecs): 	2
+SYSTEM TIME (millisecs):	2
+UID (user id):			0
+COMM (program name):	test
+
+PID:					3091
+STATE:				0
+NICE:				-1
+PARENT PID:			3090
+NUMBER OF CHILDREN: 	-1
+YOUNGEST CHILD (PID): 	-1
+YOUNGER SIBLING (PID):	-1
+OLDER SIBLING (PID):	-1
+START TIME (nanosecs):	1326240760922
+USER TIME (millisecs): 	4
+SYSTEM TIME (millisecs):	7
+UID (user id):			0
+COMM (program name):	test
+
+
+
+Upon calling our static system call in our test program, we received the following output:
+
+Q: Which fields in the pinfo structure change? Which ones do not? For each field in the pinfo structure, discuss how frequently it changes and why as part of your experiment journal/log.
+
+From running our test program several times and creating children and siblings for our process, we learned the following about the different fields of the pinfo structure:
+
+1. pid: This field changed with each of our tests, and appears to be determined by the number of processes running in the system. This field changed frequently for us.
+
+2. state: The state remained at zero for all of our tests, as expected, which correctly indicates that the process is runnable. 
+
+3. nice: This value changed based on the other processes running. We noted that the nice value seemed to increase (so the priority decreased) when sibling processes were run with our test. This field changed frequently for us.
+
+4. parent_pid: The parent PID never changed (unless we printed out the information for a child process), since the same bash process was used for all of our tests. 
+
+5. children: The number of children changed based on the number of child processes forked from the system call's calling process. If the process was not forked, then this value remained at a steady -1 throughout our tests. This field changed for us as expected.
+
+6. youngest_child_pid: The youngest child PID changed based on the PID of the last child process forked from the parent process. If a child process was not forked from the parent process, this PID remained at a steady -1. This field changed for us as expected.
+ 
+7. younger_sibling_pid: The younger sibling PID changed based on the PID of the sibling process executed right after our test process. If no sibling processes were run after our test process, than this PID remained at a steady -1.This field changed for us as expected.
+
+8. older_sibling_pid: The older sibling PID changed based on the PID of the sibling process executed right before our test process. If no sibling processes were run before our test process, than this PID remained at a steady -1. This field changed for us as expected.
+
+9. start_time: The start time that we displayed represented the time calculated by the system in nanoseconds. This field incremented with each test, showing that time passed in the system clock. This field changed very frequently.
+
+10. user_time: The user time varied depending on how much time the process spent in the user mode, and was always less than or equal to the system time in all of our tests. This field changed frequently.
+
+11. sys_time: The system time varied, but never appeared to be less than the user time in any of our tests. This field changed frequently.
+
+12. uid: This field never changed and remained at zero for all our tests since we were running all of our tests from the root account.
+
+13. comm: This field remained constant since the name of the process we used to test our static system call never changed.
